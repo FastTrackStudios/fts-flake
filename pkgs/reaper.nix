@@ -117,6 +117,15 @@ stdenv.mkDerivation (finalAttrs: {
       # Add the missing no-op stub. (Should be upstreamed to WDL.)
       sed -i '/void swell_oswindow_invalidate/a void swell_oswindow_maximize(HWND hwnd, bool wantmax) { }' \
         /tmp/wdl-build/swell/swell-generic-headless.cpp
+
+      # Keep REAPER's main loop alive in headless mode.
+      # Without GDK events or audio hardware, REAPER's main loop goes idle
+      # after ~10 iterations. By making SWELL_RunEvents() sleep for 33ms
+      # instead of being a no-op, we give the main loop a ~30Hz heartbeat.
+      # SWELL_RunMessageLoop() calls SWELL_RunEvents() then processes timers,
+      # so this keeps timer callbacks firing at ~30Hz.
+      sed -i '/^void SWELL_RunEvents()$/{n;s/^{$/{ usleep(33000);/}' \
+        /tmp/wdl-build/swell/swell-generic-headless.cpp
       make -C /tmp/wdl-build/swell NOGDK=1 ALLOW_WARNINGS=1 -j$NIX_BUILD_CORES
       cp /tmp/wdl-build/swell/libSwell.so $out/opt/REAPER/libSwell.so
       echo "Headless libSwell.so installed (NOGDK)"
