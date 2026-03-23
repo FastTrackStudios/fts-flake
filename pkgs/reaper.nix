@@ -33,7 +33,7 @@
 }:
 
 let
-  version = "7.59";
+  version = "7.66";
 
   url_for_platform =
     arch:
@@ -57,8 +57,8 @@ stdenv.mkDerivation (finalAttrs: {
     url = url_for_platform stdenv.hostPlatform.qemuArch;
     hash =
       {
-        x86_64-linux = "sha256-II2QOv7eHD4JtE5We1uuEuCt5RZmK6VFtZFyLEArUSc=";
-        aarch64-linux = "sha256-/iDQBnYf+1xYJ+JFFT5ikGWDmQdhe2L1o+lZr8pB+Q0=";
+        x86_64-linux = "sha256-GMNtVql069snZzvaUrw0SEygbbnafS20HSzLdQDC6yU=";
+        aarch64-linux = "sha256-KU+CCDs4gFNa0JWs3G0b87Ih4pd73FwX7BH/mjRWmw8=";
       }
       .${stdenv.hostPlatform.system};
   };
